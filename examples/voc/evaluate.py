@@ -17,6 +17,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('model_file', help='Model path')
     parser.add_argument('-g', '--gpu', type=int, default=0)
+    
+    parser.add_argument(
+        '--pretrained-model',
+        default=torchfcn.models.FCN32s.download(),
+        help='pretrained model of FCN32s',
+    )
+    
     args = parser.parse_args()
 
     os.environ['CUDA_VISIBLE_DEVICES'] = str(args.gpu)
@@ -46,11 +53,12 @@ def main():
         model = model.cuda()
     print('==> Loading %s model file: %s' %
           (model.__class__.__name__, model_file))
-    model_data = torch.load(model_file)
+    model_data = torch.load(args.pretrained_model)
     try:
         model.load_state_dict(model_data)
     except Exception:
         model.load_state_dict(model_data['model_state_dict'])
+    model.copy_params_from_fcn32s(fcn32s)
     model.eval()
 
     print('==> Evaluating with VOC2011ClassSeg seg11valid')
