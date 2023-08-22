@@ -53,7 +53,9 @@ def main():
         model = model.cuda()
     print('==> Loading %s model file: %s' %
           (model.__class__.__name__, model_file))
+    print(args.pretrained_model)
     model_data = torch.load(args.pretrained_model)
+    print(model_data)
     try:
         model.load_state_dict(model_data)
     except Exception:
