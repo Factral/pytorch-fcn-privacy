@@ -54,12 +54,13 @@ def main():
     print('==> Loading %s model file: %s' %
           (model.__class__.__name__, model_file))
     print(args.pretrained_model)
+    fcn32s = torchfcn.models.FCN32s()
     model_data = torch.load(args.pretrained_model)
     print(model_data)
     try:
-        model.load_state_dict(model_data)
+        fcn32s.load_state_dict(model_data)
     except Exception:
-        model.load_state_dict(model_data['model_state_dict'])
+        fcn32s.load_state_dict(model_data['model_state_dict'])
     model.copy_params_from_fcn32s(fcn32s)
     model.eval()
 
